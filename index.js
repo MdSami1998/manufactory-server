@@ -29,20 +29,13 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result)
         })
-        // tools get api for single tool
+
+        // get api for single tool
         app.get('/tools/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const tool = await toolsCollection.findOne(query);
             res.send(tool);
-        })
-
-        // get all orders collection api
-        app.get('/orders', async (req, res) => {
-            const query = {};
-            const cursor = ordersCollection.find(query);
-            const result = await cursor.toArray();
-            res.send(result)
         })
 
         // (post/insert) order collection api
@@ -52,7 +45,7 @@ async function run() {
             res.send(result);
         })
 
-        // get my orders collection
+        // get my orders collection using email query
         app.get('/orders', async (req, res) => {
             const email = req.query.email;
             const query = { email: email };
