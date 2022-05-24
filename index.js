@@ -37,6 +37,14 @@ async function run() {
             res.send(tool);
         })
 
+        // get all orders collection api
+        app.get('/orders', async (req, res) => {
+            const query = {};
+            const cursor = ordersCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result)
+        })
+        
         // (post/insert) order collection api
         app.post('/orders', async (req, res) => {
             const order = req.body;
