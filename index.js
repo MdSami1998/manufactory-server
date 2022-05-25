@@ -64,12 +64,12 @@ async function run() {
         })
 
         // get all reviews collection api
-        // app.get('/reviews', async (req, res) => {
-        //     const query = {};
-        //     const cursor = reviewsCollection.find(query);
-        //     const result = await cursor.toArray();
-        //     res.send(result)
-        // })
+        app.get('/reviews', async (req, res) => {
+            const query = {};
+            const cursor = reviewsCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result.reverse())
+        })
 
         // api for post reviews from addReview page of Dashboard
         app.post('/reviews', async (req, res) => {
