@@ -47,7 +47,7 @@ async function run() {
             res.send(result.reverse());
         })
 
-        // post tools api
+        // post products in toolsCollection api
         app.post('/tools', async (req, res) => {
             const product = req.body;
             const result = await toolsCollection.insertOne(product);
@@ -60,6 +60,14 @@ async function run() {
             const query = { _id: ObjectId(id) };
             const tool = await toolsCollection.findOne(query);
             res.send(tool);
+        })
+
+        // api for delete product from manage products in dashboard 
+        app.delete('/tools/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await toolsCollection.deleteOne(query);
+            res.send(result);
         })
 
         // (post/insert) order collection api
