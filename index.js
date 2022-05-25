@@ -21,6 +21,7 @@ async function run() {
         await client.connect();
         const toolsCollection = client.db("manufactory").collection("tools");
         const ordersCollection = client.db("manufactory").collection("orders");
+        const reviewsCollection = client.db("manufactory").collection("reviews");
 
         // get all tools collection api
         app.get('/tools', async (req, res) => {
@@ -59,6 +60,21 @@ async function run() {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await ordersCollection.deleteOne(query);
+            res.send(result);
+        })
+
+        // get all reviews collection api
+        // app.get('/reviews', async (req, res) => {
+        //     const query = {};
+        //     const cursor = reviewsCollection.find(query);
+        //     const result = await cursor.toArray();
+        //     res.send(result)
+        // })
+
+        // api for post reviews from addReview page of Dashboard
+        app.post('/reviews', async (req, res) => {
+            const review = req.body;
+            const result = await reviewsCollection.insertOne(review);
             res.send(result);
         })
     } finally {
