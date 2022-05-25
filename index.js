@@ -44,7 +44,14 @@ async function run() {
             const query = {};
             const cursor = toolsCollection.find(query);
             const result = await cursor.toArray();
-            res.send(result)
+            res.send(result.reverse());
+        })
+
+        // post tools api
+        app.post('/tools', async (req, res) => {
+            const product = req.body;
+            const result = await toolsCollection.insertOne(product);
+            res.send(result);
         })
 
         // get api for single tool
@@ -121,7 +128,7 @@ async function run() {
         })
 
         // make admin one user from all users
-        app.put('/user/admin/:email', async (req, res) => {
+        app.put('/user/admin/:email', verifyJWT, async (req, res) => {
             const email = req.params.email;
             const requester = req.decoded.email;
             const requesterAccount = await userCollection.findOne({ email: requester });
@@ -137,7 +144,7 @@ async function run() {
                 res.status(403).send({ message: 'Forbidden Access' });
             }
         })
-        
+
         // verify admin api
         app.get('/admin/:email', async (req, res) => {
             const email = req.params.email;
@@ -145,8 +152,8 @@ async function run() {
             const isAdmin = user.role === 'admin';
             res.send({ admin: isAdmin });
         })
-
-    } finally {
+    }
+    finally {
 
     }
 }
