@@ -39,6 +39,7 @@ async function run() {
         const ordersCollection = client.db("manufactory").collection("orders");
         const reviewsCollection = client.db("manufactory").collection("reviews");
         const userCollection = client.db("manufactory").collection("users");
+        const paymentCollection = client.db("manufactory").collection("payments");
 
         // get all tools collection api
         app.get('/tools', async (req, res) => {
@@ -63,7 +64,7 @@ async function run() {
             res.send(tool);
         })
 
-        // api for delete product from manage products in dashboard 
+        // api for delete product from manage products in dashboard by admin
         app.delete('/tools/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
@@ -186,7 +187,7 @@ async function run() {
         })
 
         // PAYMENT INTET API
-        app.post("/create-payment-intent",verifyJWT, async (req, res) => {
+        app.post("/create-payment-intent", verifyJWT, async (req, res) => {
             // const { price } = req.body;
             const service = req.body;
             const price = service.price;
@@ -197,6 +198,22 @@ async function run() {
                 payment_method_types: ['card']
             });
             res.send({ clientSecret: paymentIntent.client_secret });
+        })
+
+        // update payment data in order collection 
+        app.patch('/orders/:id', verifyJWT, async (req, res) => {
+            const id = req.params.id;
+            const payment = req.body;
+            const filter = { _id: ObjectId(id) };
+            const updatedDoc = {
+                $set: {
+                    paid: true,
+                    transectionID: payment.transectionID
+                },
+            };
+            const result = await paymentCollection.insertOne(payment);
+            const updatedOrder = await ordersCollection.updateOne(filter, updatedDoc);
+            res.send(updatedDoc);
         })
     }
     finally {
