@@ -125,6 +125,17 @@ async function run() {
             res.send(result);
         })
 
+        // API FOR SHIPPED SINGLE ORDER BY ADMIN
+        app.put('/manageorders/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+                const updateDoc = {
+                    $set: { status: 'shipped' },
+                };
+                const result = await ordersCollection.updateOne(filter, updateDoc);
+                res.send(result);
+        })
+
         // get all reviews collection api
         app.get('/reviews', async (req, res) => {
             const query = {};
