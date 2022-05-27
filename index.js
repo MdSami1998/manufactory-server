@@ -129,11 +129,11 @@ async function run() {
         app.put('/manageorders/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
-                const updateDoc = {
-                    $set: { status: 'shipped' },
-                };
-                const result = await ordersCollection.updateOne(filter, updateDoc);
-                res.send(result);
+            const updateDoc = {
+                $set: { status: 'shipped' },
+            };
+            const result = await ordersCollection.updateOne(filter, updateDoc);
+            res.send(result);
         })
 
         // get all reviews collection api
@@ -169,6 +169,27 @@ async function run() {
         app.get('/user', verifyJWT, async (req, res) => {
             const users = await userCollection.find().toArray();
             res.send(users);
+        })
+
+        // GET MEMBER DATA BY QUERY FOR PROFILE UPDATE
+        app.get('/member', verifyJWT, async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const cursor = userCollection.find(query);
+            const member = await cursor.toArray();
+            return res.send(member);
+        })
+
+        app.put('/member/:email', async (req, res) => {
+            const email = req.params.email;
+            const updatedProfile = req.body;
+            const filter = { email: email };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: updatedProfile,
+            };
+            const result = await userCollection.updateOne(filter, updateDoc, options);
+            res.send(result);
         })
 
         // make admin one user from all users
