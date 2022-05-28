@@ -40,6 +40,7 @@ async function run() {
         const reviewsCollection = client.db("manufactory").collection("reviews");
         const userCollection = client.db("manufactory").collection("users");
         const paymentCollection = client.db("manufactory").collection("payments");
+        const membersCollection = client.db("manufactory").collection("teamMembers");
 
         // get all tools collection api
         app.get('/tools', async (req, res) => {
@@ -246,6 +247,14 @@ async function run() {
             const result = await paymentCollection.insertOne(payment);
             const updatedOrder = await ordersCollection.updateOne(filter, updatedDoc);
             res.send(updatedDoc);
+        })
+
+        // team members api collection 
+        app.get('/members', async (req, res) => {
+            const query = {};
+            const cursor = membersCollection.find(query);
+            const members = await cursor.toArray();
+            res.send(members);
         })
     }
     finally {
