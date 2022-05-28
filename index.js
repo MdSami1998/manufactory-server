@@ -176,9 +176,8 @@ async function run() {
         app.get('/member', verifyJWT, async (req, res) => {
             const email = req.query.email;
             const query = { email: email };
-            const cursor = userCollection.find(query);
-            const member = await cursor.toArray();
-            return res.send(member);
+            const member =await userCollection.findOne(query);
+            res.send(member);
         })
 
         app.put('/member/:email', async (req, res) => {
